@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Angular / build output
+.angular/cache/
+dist/
+out-tsc/
+
+# Runtime / local logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment / local secrets
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor metadata
+.idea/
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Keep GitHub Pages output trackable when using Settings -> Pages -> /docs
+!docs/
+!docs/**
+
+# Keep package lockfile trackable for reproducible installs
+!package-lock.json
+

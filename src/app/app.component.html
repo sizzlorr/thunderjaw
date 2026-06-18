@@ -1,0 +1,195 @@
+<main class="page-shell">
+  <section class="hero" aria-labelledby="page-title">
+    <div>
+      <p class="eyebrow">Painted Parts Tracker</p>
+      <h1 id="page-title">Manage painting stages and loads</h1>
+      <p class="hero-copy">
+        Add stages, attach color loads, and keep done/undone state saved in
+        <code>data/state.json</code> with browser local storage as a fallback.
+      </p>
+    </div>
+
+    <button class="primary-button" type="button" (click)="addStage()">+ Add Stage</button>
+  </section>
+
+  <section class="summary" aria-label="Progress summary">
+    <article>
+      <span>{{ state.stages.length }}</span>
+      <p>Stages</p>
+    </article>
+    <article>
+      <span>{{ completedStages }}</span>
+      <p>Done stages</p>
+    </article>
+    <article>
+      <span>{{ completedLoads }} / {{ totalLoads }}</span>
+      <p>Done loads</p>
+    </article>
+  </section>
+
+  <p class="status" [class.saving]="isSaving" role="status">
+    {{ isSaving ? 'Saving…' : statusMessage }}
+  </p>
+
+  <section *ngIf="state.stages.length; else emptyState" class="stages" aria-label="Stages">
+    <article
+      *ngFor="let stage of state.stages; trackBy: trackStage"
+      class="stage-card"
+      [class.done]="stage.done"
+    >
+      <header class="stage-header">
+        <div>
+          <h2>{{ stage.title }}</h2>
+          <p>{{ stage.loads.length }} load{{ stage.loads.length === 1 ? '' : 's' }}</p>
+        </div>
+
+        <div class="stage-actions">
+          <button class="secondary-button" type="button" (click)="openAddLoadModal(stage)">
+            + Add Load
+          </button>
+          <button class="toggle-button" type="button" (click)="toggleStage(stage)">
+            {{ stage.done ? 'Mark Stage Undone' : 'Mark Stage Done' }}
+          </button>
+          <button class="danger-button" type="button" (click)="removeStage(stage.id)">
+            Remove
+          </button>
+        </div>
+      </header>
+
+      <div *ngIf="stage.loads.length; else noLoads" class="loads">
+        <article
+          *ngFor="let load of stage.loads; trackBy: trackLoad"
+          class="load-card"
+          [class.done]="load.done"
+        >
+          <div class="load-color" [style.background]="load.colorCode" aria-hidden="true"></div>
+          <div class="load-content">
+            <div class="load-title-row">
+              <h3>{{ load.colorName }}</h3>
+              <span class="color-code">{{ load.colorCode }}</span>
+            </div>
+            <p><strong>Group(s):</strong> {{ load.groupNames }}</p>
+            <p *ngIf="load.comment" class="comment">{{ load.comment }}</p>
+          </div>
+          <div class="load-actions">
+            <button class="toggle-button small" type="button" (click)="toggleLoad(load)">
+              {{ load.done ? 'Undone' : 'Done' }}
+            </button>
+            <button class="secondary-button small" type="button" (click)="openEditLoadModal(stage, load)">
+              Edit
+            </button>
+            <button class="danger-button small" type="button" (click)="removeLoad(stage, load.id)">
+              Remove
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #noLoads>
+        <div class="empty-loads">
+          <p>No loads yet.</p>
+          <button class="secondary-button" type="button" (click)="openAddLoadModal(stage)">
+            Add first load
+          </button>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+
+  <ng-template #emptyState>
+    <section class="empty-state">
+      <h2>No stages yet</h2>
+      <p>Click “Add Stage” to create Stage 1 and start tracking painted parts.</p>
+      <button class="primary-button" type="button" (click)="addStage()">+ Add Stage</button>
+    </section>
+  </ng-template>
+</main>
+
+<div *ngIf="modalStageId" class="modal-backdrop" role="presentation" (click)="closeLoadModal()">
+  <section
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="modalTitle"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal-header">
+      <div>
+        <p class="eyebrow">{{ activeStage?.title }}</p>
+        <h2>{{ modalTitle }}</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close dialog" (click)="closeLoadModal()">×</button>
+    </header>
+
+    <form class="load-form" #loadFormRef="ngForm" (ngSubmit)="saveLoad()" novalidate>
+      <label>
+        <span>Color Name <strong aria-hidden="true">*</strong></span>
+        <input
+          name="colorName"
+          type="text"
+          [(ngModel)]="loadForm.colorName"
+          required
+          autocomplete="off"
+          placeholder="e.g. Signal Red"
+        />
+      </label>
+      <p *ngIf="formSubmitted && !loadForm.colorName.trim()" class="field-error">
+        Color Name is required.
+      </p>
+
+      <label>
+        <span>Color Code</span>
+        <div class="color-input-row">
+          <input
+            class="color-picker"
+            name="colorCodePicker"
+            type="color"
+            [(ngModel)]="loadForm.colorCode"
+            aria-label="Pick color"
+          />
+          <input
+            name="colorCode"
+            type="text"
+            [(ngModel)]="loadForm.colorCode"
+            pattern="^#[0-9a-fA-F]{6}$"
+            placeholder="#2563eb"
+            aria-label="Color hex code"
+          />
+        </div>
+      </label>
+
+      <label>
+        <span>Group(s) Name <strong aria-hidden="true">*</strong></span>
+        <input
+          name="groupNames"
+          type="text"
+          [(ngModel)]="loadForm.groupNames"
+          required
+          autocomplete="off"
+          placeholder="e.g. Doors, Hoods"
+        />
+      </label>
+      <p *ngIf="formSubmitted && !loadForm.groupNames.trim()" class="field-error">
+        Group(s) Name is required.
+      </p>
+
+      <label>
+        <span>Comment</span>
+        <textarea
+          name="comment"
+          rows="4"
+          [(ngModel)]="loadForm.comment"
+          placeholder="Optional notes about this load"
+        ></textarea>
+      </label>
+
+      <footer class="modal-actions">
+        <button class="secondary-button" type="button" (click)="closeLoadModal()">Cancel</button>
+        <button class="primary-button" type="submit">
+          {{ editingLoadId ? 'Save Changes' : 'Save Load' }}
+        </button>
+      </footer>
+    </form>
+  </section>
+</div>
+
