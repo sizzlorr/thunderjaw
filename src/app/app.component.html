@@ -4,8 +4,7 @@
       <p class="eyebrow">Painted Parts Tracker</p>
       <h1 id="page-title">Manage painting stages and loads</h1>
       <p class="hero-copy">
-        Add stages, attach color loads, and keep done/undone state saved in
-        <code>data/state.json</code> with browser local storage as a fallback.
+        Add stages, attach color loads, and keep done/undone state.
       </p>
     </div>
 
@@ -33,14 +32,17 @@
 
   <section *ngIf="state.stages.length; else emptyState" class="stages" aria-label="Stages">
     <article
-      *ngFor="let stage of state.stages; trackBy: trackStage"
+      *ngFor="let stage of state.stages; let i = index; trackBy: trackStage"
       class="stage-card"
       [class.done]="stage.done"
     >
       <header class="stage-header">
-        <div>
-          <h2>{{ stage.title }}</h2>
-          <p>{{ stage.loads.length }} load{{ stage.loads.length === 1 ? '' : 's' }}</p>
+        <div class="stage-title-row">
+          <span class="stage-badge">{{ i + 1 }}</span>
+          <div>
+            <h2>{{ stage.title }}</h2>
+            <p>{{ stage.loads.length }} load{{ stage.loads.length === 1 ? '' : 's' }}</p>
+          </div>
         </div>
 
         <div class="stage-actions">
@@ -58,13 +60,14 @@
 
       <div *ngIf="stage.loads.length; else noLoads" class="loads">
         <article
-          *ngFor="let load of stage.loads; trackBy: trackLoad"
+          *ngFor="let load of stage.loads; let li = index; trackBy: trackLoad"
           class="load-card"
           [class.done]="load.done"
         >
           <div class="load-color" [style.background]="load.colorCode" aria-hidden="true"></div>
           <div class="load-content">
             <div class="load-title-row">
+              <span class="load-number">{{ li + 1 }}</span>
               <h3>{{ load.colorName }}</h3>
               <span class="color-code">{{ load.colorCode }}</span>
             </div>

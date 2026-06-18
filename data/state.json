@@ -1,3 +1,27 @@
 {
-  "stages": []
+  "stages": [
+    {
+      "id": "stage-1781809625422-95fb6105-d09a-4b26-88de-3f20b9db2223",
+      "title": "Stage 1",
+      "done": false,
+      "loads": [
+        {
+          "id": "load-1781809630844-bce5ff5b-19b9-4ec0-9400-a80246a64787",
+          "colorName": "df",
+          "colorCode": "#2563eb",
+          "groupNames": "sdf",
+          "comment": "sdf",
+          "done": false
+        },
+        {
+          "id": "load-1781809893261-0fcbe65e-db78-478e-81ad-27f6f333bbd9",
+          "colorName": "sdfsdf",
+          "colorCode": "#2563eb",
+          "groupNames": "sVdasv",
+          "comment": "dfvdsvf",
+          "done": false
+        }
+      ]
+    }
+  ]
 }

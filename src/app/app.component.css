@@ -46,7 +46,7 @@ p {
 
 h1 {
   margin-bottom: 12px;
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(1.5rem, 4vw, 3rem);
   line-height: 1;
   letter-spacing: -0.05em;
 }
@@ -203,6 +203,32 @@ textarea:focus-visible {
   margin-bottom: 18px;
 }
 
+.stage-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stage-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 900;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28);
+}
+
+.stage-card.done .stage-badge {
+  background: #047857;
+  box-shadow: 0 6px 18px rgba(4, 120, 87, 0.25);
+}
+
 .stage-actions,
 .load-actions,
 .modal-actions {
@@ -251,6 +277,21 @@ textarea:focus-visible {
   align-items: baseline;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.load-number {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 0.75rem;
+  font-weight: 900;
 }
 
 .load-content p {

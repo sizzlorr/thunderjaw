@@ -196,7 +196,7 @@ export class AppComponent implements OnInit {
       next: (state) => {
         this.state = this.normalizeState(state);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
-        this.statusMessage = 'Saved to project JSON file.';
+        this.statusMessage = 'Saved to Local Storage.';
       },
       error: () => {
         this.state = this.readLocalState();
@@ -214,7 +214,7 @@ export class AppComponent implements OnInit {
       next: (savedState) => {
         this.state = this.normalizeState(savedState);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
-        this.statusMessage = `${successMessage} Saved to project JSON file.`;
+        this.statusMessage = `${successMessage} 'Saved to Local Storage.`;
         this.isSaving = false;
       },
       error: () => {
